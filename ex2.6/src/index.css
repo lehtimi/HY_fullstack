@@ -1,0 +1,9 @@
+.info {
+    color: green;
+    background-color: lightgray;
+    border-style: solid;
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
