@@ -1,4 +1,4 @@
-POST https://boiling-meadow-01355.herokuapp.com/api/persons
+POST https://localhost:3001/api/persons
 Content-Type: application/json
 
 {

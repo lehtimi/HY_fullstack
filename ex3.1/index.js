@@ -1,13 +1,16 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
-
 const app = express()
+const mongoose = require('mongoose')
+const Person = require('./models/person')
 
 app.use(express.json())
+app.use(express.static('build'))
 app.use(cors())
 
 
-let persons = [
+/*let people = [
     { 
       "id": 1,
       "name": "Arto Hellas", 
@@ -28,24 +31,25 @@ let persons = [
       "name": "Mary Poppendieck", 
       "number": "39-23-6423122"
     }
-]
+]*/
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    Person.find({}).then(people => {
+        response.json(people)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-    if (person) {
+    Person.findById(request.params.id).then(person => {
         response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    })
 })
 
 app.get('/info', (request, response) => {
-    response.send(`Phonebook has info for ${persons.map(person => person.id).length} people. <br/> ${Date()}`)
+    console.log("Getting info")
+    Person.countDocuments({}).then(count => {
+        response.send(`Phonebook has info for ${count} people. <br/> ${Date()}`)
+    })
 })
 
 
@@ -63,30 +67,30 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    if (persons.find(person => person.name === body.name)){
+    if (people.find(person => person.name === body.name)){
         return response.status(400).json({
             error: "this contact already exists"
         })
     }
 
-    const contact = {
+    const person = new Person ({
         id: generateId(),
         name: body.name,
         number: body.number
-    }
-
-    persons = persons.concat(contact)
-    response.json(contact)
+    })
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
+    people = people.filter(person => person.id !== id)
 
     response.status(204).end()
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
