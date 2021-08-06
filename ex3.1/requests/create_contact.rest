@@ -5,3 +5,12 @@ Content-Type: application/json
     "name": "Ada Mayo",
     "number":"3948-20202"
 }
+
+###
+PUT http://localhost:3001/api/persons/610cf44d1f09d0c43680751c
+Content-Type: application/json
+
+{
+    "name": "Ada Mayo",
+    "number":"0101010"
+}
