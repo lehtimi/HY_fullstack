@@ -1,3 +1,3 @@
 # HY_fullstack
 
-Link to herokuapp: https://boiling-meadow-01355.herokuapp.com/api/persons/30
+Link to herokuapp: https://shielded-thicket-29933.herokuapp.com
