@@ -3,13 +3,13 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 const Person = require('./models/person')
+
 
 app.use(express.json())
 app.use(express.static('build'))
 app.use(cors())
-
-
 
 /*let people = [
     { 
@@ -61,7 +61,7 @@ const generateId = () => {
     return id
 }
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
     console.log(body)
     /*
@@ -77,15 +77,34 @@ app.post('/api/persons', (request, response) => {
         })
     }
     */
+
     const person = new Person ({
         id: generateId(),
         name: body.name,
         number: body.number
     })
-    person.save().then(savedPerson => {
+
+    person.save()
+        .then(savedPerson => {
         response.json(savedPerson)
-    })
+        })
+        .catch(error => next(error))
+    /*
+    ( error => {
+        if (error) {
+            return response.status(400).json({
+                error: `Error with saving person: ${error.message}`
+            })
+        } else {
+            savedPerson => {
+                response.json(savedPerson)
+            }    
+        }
+    })*/    
 })
+
+
+
 
 app.put('/api/persons/:id', (request, response, next) => {
     const body = request.body
@@ -123,6 +142,14 @@ const errorHandler = (error, request, response, next) => {
 
     if (error.name === 'CastError') {
         return response.status(400).send({error: 'malformatted id'})
+    } else if (error.name === 'ValidationError'){
+        return response.status(400).json({
+            error: error.message
+        })
+    } else if (error.name === 'ValidatorError') {
+        return response.status(400).json({
+            error: error.message
+        })
     }
     next(error)
 }
@@ -133,4 +160,3 @@ const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
-

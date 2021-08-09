@@ -2,7 +2,7 @@ POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "Ada Mayo",
+    "name": "Ad",
     "number":"3948-20202"
 }
 
@@ -12,5 +12,5 @@ Content-Type: application/json
 
 {
     "name": "Ada Mayo",
-    "number":"0101010"
+    "number":"01033333"
 }
