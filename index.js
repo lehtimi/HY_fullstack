@@ -2,8 +2,6 @@ require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const app = express()
-const mongoose = require('mongoose')
-const uniqueValidator = require('mongoose-unique-validator')
 const Person = require('./models/person')
 
 
@@ -12,24 +10,24 @@ app.use(express.static('build'))
 app.use(cors())
 
 /*let people = [
-    { 
+    {
       "id": 1,
-      "name": "Arto Hellas", 
+      "name": "Arto Hellas",
       "number": "040-123456"
     },
-    { 
+    {
       "id": 2,
-      "name": "Ada Lovelace", 
+      "name": "Ada Lovelace",
       "number": "39-44-5323523"
     },
-    { 
+    {
       "id": 3,
-      "name": "Dan Abramov", 
+      "name": "Dan Abramov",
       "number": "12-43-234345"
     },
-    { 
+    {
       "id": 4,
-      "name": "Mary Poppendieck", 
+      "name": "Mary Poppendieck",
       "number": "39-23-6423122"
     }
 ]*/
@@ -43,13 +41,13 @@ app.get('/api/persons', (request, response) => {
 app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id)
         .then(person => {
-        response.json(person)
+            response.json(person)
         })
         .catch(error => next(error))
 })
 
 app.get('/info', (request, response) => {
-    console.log("Getting info")
+    console.log('Getting info')
     Person.countDocuments({}).then(count => {
         response.send(`Phonebook has info for ${count} people. <br/> ${Date()}`)
     })
@@ -86,7 +84,7 @@ app.post('/api/persons', (request, response, next) => {
 
     person.save()
         .then(savedPerson => {
-        response.json(savedPerson)
+            response.json(savedPerson)
         })
         .catch(error => next(error))
     /*
@@ -98,9 +96,9 @@ app.post('/api/persons', (request, response, next) => {
         } else {
             savedPerson => {
                 response.json(savedPerson)
-            }    
+            }
         }
-    })*/    
+    })*/
 })
 
 
@@ -115,7 +113,7 @@ app.put('/api/persons/:id', (request, response, next) => {
         number: body.number
     }
 
-    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    Person.findByIdAndUpdate(request.params.id, person, { new: true } )
         .then(updatedPerson => {
             response.json(updatedPerson)
         })
@@ -125,14 +123,12 @@ app.put('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndDelete(request.params.id)
-        .then(result => {
-            response.status(204).end()
-        })
+        .then(response.status(204).end())
         .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
-    response.status(400).send( {error: 'unknown endpoint'} )
+    response.status(400).send({ error:'unknown endpoint' })
 }
 
 app.use(unknownEndpoint)
@@ -141,8 +137,8 @@ const errorHandler = (error, request, response, next) => {
     console.error(error.message)
 
     if (error.name === 'CastError') {
-        return response.status(400).send({error: 'malformatted id'})
-    } else if (error.name === 'ValidationError'){
+        return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
         return response.status(400).json({
             error: error.message
         })
